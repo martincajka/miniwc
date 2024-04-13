@@ -1,43 +1,75 @@
-use std::{default, error::Error, fmt::format, fs};
+use std::{
+    fs,
+    io::{self, Read},
+};
 
 #[derive(Debug)]
 pub struct Config {
     pub query: String,
-    pub file_path: String,
+    pub file: Option<String>,
 }
 
 impl Config {
-    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+    pub fn build(mut args: impl Iterator<Item = String>) -> Config {
         args.next();
+        let first_arg = args.next();
 
-        let first_arg = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Missing arguments"),
+        let config = match first_arg {
+            Some(arg) if arg.starts_with('-') => {
+                let file = args.next();
+                Config { query: arg, file }
+            }
+            Some(arg) => Config {
+                query: "-cwl".to_string(),
+                file: Some(arg),
+            },
+            None => Config {
+                query: "-cwl".to_string(),
+                file: None,
+            },
         };
 
-        let file_path = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Missing file path"),
-        };
-
-        Ok(Config {
-            query: first_arg,
-            file_path,
-        })
+        config
     }
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let text = fs::read_to_string(&config.file_path)?;
-    let count = count(&'c', &text);
-    if let Ok(result) = count {
-        println!("{} {}", result, &config.file_path);
+pub fn run(config: Config) -> io::Result<()> {
+    let content = match &config.file {
+        Some(file) => fs::read_to_string(file)?,
+        None => {
+            let mut input = String::new();
+            io::stdin().read_to_string(&mut input)?;
+            input
+        }
+    };
+
+    for char in config.query.chars().skip(1) {
+        match char {
+            'c' => {
+                let bytes = count_bytes(&content);
+                println!("Bytes: {}", bytes);
+            }
+            'w' => {
+                let bytes = count_words(&content);
+                println!("Words: {}", bytes);
+            }
+            'l' => {
+                let bytes = count_lines(&content);
+                println!("Lines: {}", bytes);
+            }
+            _ => {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    "Invalid query. Only 'c', 'w', 'l' are allowed",
+                ))
+            }
+        }
     }
 
     Ok(())
 }
 
-fn count(c: &char, text: &str) -> Result<usize, &'static str> {
+fn _count(c: &char, text: &str) -> Result<usize, &'static str> {
     match c {
         'c' => Ok(count_bytes(text)),
         'w' => Ok(count_words(text)),
@@ -73,8 +105,7 @@ mod tests {
         let args = vec!["text.txt".to_string()].into_iter();
 
         let result = Config::build(args);
-        assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "Missing arguments");
+        assert_eq!(result.query, "-cwl");
     }
 
     #[test]
