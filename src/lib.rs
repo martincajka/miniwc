@@ -12,24 +12,33 @@ pub struct Config {
 impl Config {
     pub fn build(mut args: impl Iterator<Item = String>) -> Config {
         args.next();
-        let first_arg = args.next();
-
-        let config = match first_arg {
-            Some(arg) if arg.starts_with('-') => {
-                let file = args.next();
-                Config { query: arg, file }
+        let first_arg = match args.next() {
+            Some(arg) => arg,
+            None => {
+                return Config {
+                    query: "-cwl".to_string(),
+                    file: None,
+                }
             }
-            Some(arg) => Config {
-                query: "-cwl".to_string(),
-                file: Some(arg),
-            },
-            None => Config {
-                query: "-cwl".to_string(),
-                file: None,
-            },
         };
 
-        config
+        if first_arg.starts_with('-') {
+            match args.next() {
+                Some(arg) => Config {
+                    query: first_arg,
+                    file: Some(arg),
+                },
+                None => Config {
+                    query: first_arg,
+                    file: None,
+                },
+            }
+        } else {
+            Config {
+                query: "-cwl".to_string(),
+                file: Some(first_arg),
+            }
+        }
     }
 }
 
