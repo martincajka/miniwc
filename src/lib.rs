@@ -41,28 +41,32 @@ impl Config {
     }
 }
 
-pub fn run(config: Config) -> io::Result<()> {
-    let content = match &config.file {
-        Some(file) => fs::read_to_string(file)?,
+fn read_input(config: &Config) -> io::Result<String> {
+    match &config.file {
+        Some(file) => fs::read_to_string(file),
         None => {
             let mut input = String::new();
             io::stdin().read_to_string(&mut input)?;
-            input
+            Ok(input)
         }
-    };
+    }
+}
+
+pub fn run(config: Config) -> io::Result<()> {
+    let input = read_input(&config)?;
 
     for char in config.query.chars().skip(1) {
         match char {
             'c' => {
-                let bytes = count_bytes(&content);
+                let bytes = count_bytes(&input);
                 println!("Bytes: {}", bytes);
             }
             'w' => {
-                let bytes = count_words(&content);
+                let bytes = count_words(&input);
                 println!("Words: {}", bytes);
             }
             'l' => {
-                let bytes = count_lines(&content);
+                let bytes = count_lines(&input);
                 println!("Lines: {}", bytes);
             }
             _ => {
