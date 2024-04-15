@@ -52,43 +52,42 @@ fn read_input(config: &Config) -> io::Result<String> {
     }
 }
 
-pub fn run(config: Config) -> io::Result<()> {
-    let input = read_input(&config)?;
+fn process_query(config: &Config, input: &String) -> io::Result<String> {
+    let mut result = String::new();
 
     for char in config.query.chars().skip(1) {
-        match char {
-            'c' => {
-                let bytes = count_bytes(&input);
-                println!("Bytes: {}", bytes);
-            }
-            'w' => {
-                let bytes = count_words(&input);
-                println!("Words: {}", bytes);
-            }
-            'l' => {
-                let bytes = count_lines(&input);
-                println!("Lines: {}", bytes);
-            }
-            _ => {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidInput,
-                    "Invalid query. Only 'c', 'w', 'l' are allowed",
-                ))
-            }
-        }
+        let count = count(char, input)?;
+        result.push_str(&format!("{} ", count));
     }
 
-    Ok(())
+    Ok(result)
 }
 
-fn _count(c: &char, text: &str) -> Result<usize, &'static str> {
-    match c {
-        'c' => Ok(count_bytes(text)),
-        'w' => Ok(count_words(text)),
-        'l' => Ok(count_lines(text)),
-        'm' => Ok(count_chars(text)),
-        _ => Err("Error"),
+fn count(query: char, input: &String) -> io::Result<usize> {
+    match query {
+        'c' => Ok(count_bytes(input)),
+        'w' => Ok(count_words(input)),
+        'l' => Ok(count_lines(input)),
+        'm' => Ok(count_chars(input)),
+        _ => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!(
+                    "Invalid query. Only 'c', 'w', 'l' and 'm' are allowed. You entered - '{}'",
+                    query
+                ),
+            ));
+        }
     }
+}
+
+pub fn run(config: Config) -> io::Result<String> {
+    let input = read_input(&config)?;
+    let output = process_query(&config, &input)?;
+
+    println!("{} {}", output, config.file.unwrap_or("".to_string()));
+
+    Ok(output)
 }
 
 fn count_bytes(text: &str) -> usize {
