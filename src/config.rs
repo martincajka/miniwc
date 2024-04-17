@@ -10,7 +10,7 @@ impl Config {
             Some(arg) => arg,
             None => {
                 return Config {
-                    query: "-cwl".to_string(),
+                    query: "-lwc".to_string(),
                     file: None,
                 }
             }
@@ -29,7 +29,7 @@ impl Config {
             }
         } else {
             Config {
-                query: "-cwl".to_string(),
+                query: "-lwc".to_string(),
                 file: Some(first_arg),
             }
         }
