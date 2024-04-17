@@ -38,7 +38,7 @@ fn count_words(text: &str) -> usize {
 }
 
 fn count_lines(text: &str) -> usize {
-    text.len()
+    text.lines().count()
 }
 
 fn count_chars(text: &str) -> usize {
@@ -125,5 +125,54 @@ mod tests {
         let text = "abc\tdef";
 
         assert_eq!(2, count_words(text));
+    }
+
+    #[test]
+    fn lines_count_empty_string() {
+        let text = "";
+
+        assert_eq!(0, count_lines(text));
+    }
+
+    #[test]
+    fn lines_count_one_line() {
+        let text = " abc  def  /t gh /r";
+
+        assert_eq!(1, count_lines(text));
+    }
+
+    #[test]
+    fn lines_count_two_lines_newline_separator() {
+        let text = "abc\ndef";
+
+        assert_eq!(2, count_lines(text));
+    }
+
+    #[test]
+    fn lines_count_two_lines_newline_and_carriage_return() {
+        let text = "abc\n\rdef";
+
+        assert_eq!(2, count_lines(text));
+    }
+
+    #[test]
+    fn lines_count_two_lines_newline_added_as_last_char() {
+        let text = "abc\ndef\n";
+
+        assert_eq!(2, count_lines(text));
+    }
+
+    #[test]
+    fn lines_count_two_lines_newline_and_carriage_return_added_as_last_char() {
+        let text = "abc\ndef\n";
+
+        assert_eq!(2, count_lines(text));
+    }
+
+    #[test]
+    fn lines_count_two_empty_lines() {
+        let text = "\n\n";
+
+        assert_eq!(2, count_lines(text));
     }
 }
