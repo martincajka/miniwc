@@ -90,7 +90,7 @@ mod tests {
         let args = vec!["test.txt".to_string()].into_iter();
 
         let result = Config::build(args);
-        assert_eq!(result.query, "-cwl");
+        assert_eq!(result.query, "-lwc");
         assert_eq!(result.file.expect("Filename is None"), "test.txt");
     }
 
@@ -108,7 +108,7 @@ mod tests {
         let args = vec![].into_iter();
 
         let result = Config::build(args);
-        assert_eq!(result.query, "-cwl");
+        assert_eq!(result.query, "-lwc");
         assert!(result.file.is_none());
     }
 }

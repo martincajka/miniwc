@@ -1,5 +1,7 @@
 use std::io::{self};
 
+use unicode_segmentation::UnicodeSegmentation;
+
 pub fn process_query(query: &str, input: &str) -> io::Result<String> {
     let mut result = String::new();
 
@@ -42,7 +44,7 @@ fn count_lines(text: &str) -> usize {
 }
 
 fn count_chars(text: &str) -> usize {
-    text.len()
+    UnicodeSegmentation::graphemes(text, true).count()
 }
 
 #[cfg(test)]
@@ -174,5 +176,26 @@ mod tests {
         let text = "\n\n";
 
         assert_eq!(2, count_lines(text));
+    }
+
+    #[test]
+    fn chars_count_empty_string() {
+        let text = "";
+
+        assert_eq!(0, count_chars(text));
+    }
+
+    #[test]
+    fn chars_count_ascii_chars() {
+        let ascii_chars: String = (0..128).map(|i| char::from_u32(i).unwrap()).collect();
+
+        assert_eq!(128, count_chars(&ascii_chars));
+    }
+
+    #[test]
+    fn test_count_chars() {
+        assert_eq!(count_chars("Hello, 世界!"), 10);
+        assert_eq!(count_chars("👨‍👩‍👧‍👦"), 1);
+        assert_eq!(count_chars("e\u{0301}"), 1);
     }
 }
