@@ -1,4 +1,4 @@
-App
+TEST
 
 CLI args:
 coount bytes: -c
