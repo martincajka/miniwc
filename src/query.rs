@@ -34,7 +34,7 @@ fn count_bytes(text: &str) -> usize {
 }
 
 fn count_words(text: &str) -> usize {
-    text.len()
+    text.split_whitespace().count()
 }
 
 fn count_lines(text: &str) -> usize {
@@ -51,9 +51,79 @@ mod tests {
     use super::*;
 
     #[test]
-    fn succesful_byte_count() {
-        let text = "abc";
+    fn byte_count_more_than_0() {
+        let text = "a";
+
+        assert_eq!(1, count_bytes(text));
+    }
+
+    #[test]
+    fn byte_count_0_bytes() {
+        let text = "";
+
+        assert_eq!(0, count_bytes(text));
+    }
+
+    #[test]
+    fn byte_count_new_line_carriage_return_tab() {
+        let text = "\n\r\t";
 
         assert_eq!(3, count_bytes(text));
+    }
+
+    #[test]
+    fn byte_count_empty_space() {
+        let text = " ";
+
+        assert_eq!(1, count_bytes(text));
+    }
+
+    #[test]
+    fn words_count_empty_string() {
+        let text = "";
+
+        assert_eq!(0, count_words(text));
+    }
+
+    #[test]
+    fn words_count_empty_spaces() {
+        let text = "   ";
+
+        assert_eq!(0, count_words(text));
+    }
+
+    #[test]
+    fn words_count_1_word() {
+        let text = "abc";
+
+        assert_eq!(1, count_words(text));
+    }
+
+    #[test]
+    fn words_count_1_word_with_extra_spaces_around() {
+        let text = "  abc  ";
+
+        assert_eq!(1, count_words(text));
+    }
+
+    #[test]
+    fn words_count_more_than_1_word() {
+        let text = "  abc  def ";
+
+        assert_eq!(2, count_words(text));
+    }
+
+    #[test]
+    fn words_count_more_than_1_word_separated_by_new_line() {
+        let text = "abc\ndef";
+
+        assert_eq!(2, count_words(text));
+    }
+
+    #[test]
+    fn words_count_more_than_1_word_separated_by_tab() {
+        let text = "abc\tdef";
+
+        assert_eq!(2, count_words(text));
     }
 }
