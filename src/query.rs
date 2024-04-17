@@ -193,7 +193,7 @@ mod tests {
     }
 
     #[test]
-    fn test_count_chars() {
+    fn chars_count() {
         assert_eq!(count_chars("Hello, 世界!"), 10);
         assert_eq!(count_chars("👨‍👩‍👧‍👦"), 1);
         assert_eq!(count_chars("e\u{0301}"), 1);
