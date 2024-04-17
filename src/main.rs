@@ -1,4 +1,5 @@
-use miniwc::{run, Config};
+use miniwc::config::Config;
+use miniwc::run;
 
 use std::process;
 
