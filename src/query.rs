@@ -37,11 +37,11 @@ fn count_words(text: &str) -> usize {
     text.len()
 }
 
-pub fn count_lines(text: &str) -> usize {
+fn count_lines(text: &str) -> usize {
     text.len()
 }
 
-pub fn count_chars(text: &str) -> usize {
+fn count_chars(text: &str) -> usize {
     text.len()
 }
 
