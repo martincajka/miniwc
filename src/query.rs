@@ -198,4 +198,14 @@ mod tests {
         assert_eq!(count_chars("👨‍👩‍👧‍👦"), 1);
         assert_eq!(count_chars("e\u{0301}"), 1);
     }
+
+    #[test]
+    fn count_using_c_option_counts_bytes() {
+        let input = "hello /n world";
+
+        let result = count('c', input);
+        let expected = count_bytes(input);
+
+        assert_eq!(result.expect("Expected ok got Err"), expected);
+    }
 }
