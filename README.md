@@ -1,5 +1,5 @@
 # miniwc
-
+![BuildApp](https://github.com/martincajka/miniwc/workflows/BuildApp/badge.svg)
 A simple word counter written in Rust.
 
 ## Usage
