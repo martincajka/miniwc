@@ -50,6 +50,8 @@ fn count_chars(text: &str) -> usize {
 #[cfg(test)]
 mod tests {
 
+    use std::io::ErrorKind;
+
     use super::*;
 
     #[test]
@@ -225,5 +227,14 @@ mod tests {
         let input = "世界/n👨‍👩‍👧‍👦/t/ne\u{0301}";
         assert_eq!(count('m', input)?, count_chars(input));
         Ok(())
+    }
+
+    #[test]
+    fn test_count_invalid_query() {
+        let result = count('x', "test input");
+        assert!(matches!(result, Err(ref e) if e.kind() == ErrorKind::InvalidInput));
+        assert!(
+            matches!(result, Err(ref e) if e.to_string() == "Invalid query. Only 'c', 'w', 'l' and 'm' are allowed. You entered - 'x'")
+        );
     }
 }
