@@ -1,9 +1,34 @@
 # miniwc
 ![BuildApp](https://github.com/martincajka/miniwc/workflows/BuildApp/badge.svg)
 
-A simple word counter written in Rust.
+miniwc is a command-line tool that provides functionality similar to the wc (word count) tool. It allows you to count bytes, words, lines, and characters in a file or from standard input.
 
 ## Usage
+```bash
+miniwc [options] [file]
+```
+If no file is provided, miniwc will read from standard input.
+
+Options
+`-c`: Count bytes
+`-w`: Count words
+`-l`: Count lines
+`-m`: Count characters
+If no options are provided, miniwc will use `-lwc` by default.
+
+The result is always displayed in the order as the command-line arguments were provided.
+
+Examples
+Count lines, words, and bytes in a file:
+```bash
+miniwc -lwc file.txt
+```
+Count characters from standard input:
+```bash
+echo "Hello, world!" | miniwc -m
+```
+
+## Installation
 
 To make your Rust application miniwc executable from the command line using the miniwc command, follow these steps:
 
