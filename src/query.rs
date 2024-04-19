@@ -200,12 +200,30 @@ mod tests {
     }
 
     #[test]
-    fn count_using_c_option_counts_bytes() {
-        let input = "hello /n world";
+    fn count_using_c_option_counts_bytes() -> io::Result<()> {
+        let input = "@#$%^&**():<>?\"hello /n} world";
+        assert_eq!(count('c', input)?, count_bytes(input));
+        Ok(())
+    }
 
-        let result = count('c', input);
-        let expected = count_bytes(input);
+    #[test]
+    fn count_using_w_option_counts_words() -> io::Result<()> {
+        let input = "word/nword next /n/n word/tword/n";
+        assert_eq!(count('w', input)?, count_words(input));
+        Ok(())
+    }
 
-        assert_eq!(result.expect("Expected ok got Err"), expected);
+    #[test]
+    fn count_using_l_option_counts_lines() -> io::Result<()> {
+        let input = "word/nword next /n/n word/tword/n";
+        assert_eq!(count('l', input)?, count_lines(input));
+        Ok(())
+    }
+
+    #[test]
+    fn count_using_m_option_counts_characters() -> io::Result<()> {
+        let input = "世界/n👨‍👩‍👧‍👦/t/ne\u{0301}";
+        assert_eq!(count('m', input)?, count_chars(input));
+        Ok(())
     }
 }
